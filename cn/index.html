@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OKX Domain Name Launchpad - X Layer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="https://woofingjace.com/images/jace.png" type="image/x-icon">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #121212; color: #E6E6E6; padding: 20px; min-height: 100vh; line-height: 1.5; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 30px; background: #1A1A1A; border-radius: 12px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); }
+        h1 { text-align: center; color: #cccccc; font-size: clamp(1.8em, 5vw, 2.5em); margin-bottom: 25px; font-weight: 700; text-transform: uppercase; }
+        .section { background: #222222; padding: 20px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #cccccc; }
+        h2 { color: #cccccc; font-size: clamp(1.2em, 3.5vw, 1.6em); margin-bottom: 15px; font-weight: 600; }
+        .button { background: #333333; color: #ffffff; padding: 10px 20px; border: none; border-radius: 6px; font-weight: 600; font-size: 1em; cursor: pointer; transition: background 0.3s ease, transform 0.2s ease; margin: 5px; }
+        .button:hover { background: #555555; transform: translateY(-2px); }
+        .button:disabled { background: #444444; color: #777777; cursor: not-allowed; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cccccc; border-radius: 6px; background: #2A2A2A; color: #E6E6E6; font-size: 1em; }
+        input::placeholder { color: #666666; }
+        .status { margin-top: 10px; font-size: 0.9em; color: #cccccc; }
+        .wallet-info { color: #cccccc; font-weight: 600; word-break: break-all; }
+        .output-box { background: #2A2A2A; padding: 15px; border-radius: 6px; margin-bottom: 15px; word-break: break-all; font-size: 0.9em; color: #E6E6E6; }
+        .output-box label { display: block; font-size: 0.9em; margin-bottom: 5px; color: #cccccc; }
+        .footer { text-align: center; margin-top: 30px; font-size: 0.85em; color: #666666; }
+        .footer a { color: #cccccc; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+        .how-it-works { background: #222222; padding: 20px; border-radius: 8px; border: 1px solid #cccccc; margin-top: 20px; }
+        .how-it-works ul { list-style-type: disc; padding-left: 20px; margin-top: 10px; }
+        .how-it-works li { margin-bottom: 12px; font-size: 0.9em; }
+        .how-it-works .highlight { color: #cccccc; font-weight: 600; }
+        .loading { opacity: 0.7; pointer-events: none; }
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .section, .how-it-works { padding: 15px; }
+            .button { width: 100%; padding: 12px; margin: 8px 0; }
+            .how-it-works ul { padding-left: 15px; }
+            .how-it-works li { font-size: 0.85em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OKX Domain Name Launchpad</h1>
+        <div class="section">
+            <h2>Connect to X Layer</h2>
+            <button id="connectButton" class="button">Connect Wallet</button>
+            <p>Wallet: <span id="walletAddress" class="wallet-info">Not connected</span></p>
+            <div id="networkStatus" class="status">Click to connect...</div>
+        </div>
+        <div class="section" id="mintDomainSection">
+            <h2>Mint .okx Domain Name</h2>
+            <input type="text" id="domainId" placeholder="Domain ID (e.g., 王伟)" oninput="convertToHex()">
+            <div class="output-box">
+                <label>Hex Data</label>
+                <span id="hexOutputText">Enter a domain name to see the hex data</span>
+            </div>
+            <button id="copyHexButton" class="button" disabled>Copy Hex Data</button>
+            <button id="mintDomain" class="button">Mint Domain NFT</button>
+            <div class="output-box">
+                <label>Contract Address</label>
+                <span id="contractAddress">0x204fF780E126ADa44B5665a9cBC66925264c8dcB</span>
+            </div>
+            <button id="copyAddressButton" class="button">Copy Contract Address</button>
+            <div id="mintStatus" class="status"></div>
+        </div>
+        <div class="how-it-works">
+            <h2>How It Works?</h2>
+            <p>Mint and manage your unique .okx domain name NFTs on X Layer with our Launchpad!</p>
+            <ul>
+                <li><strong>Connect Your Wallet</strong>: Use MetaMask to connect to X Layer (chain ID: 196). Ensure enough <span class="highlight">ETH</span> for gas fees.</li>
+                <li><strong>Mint Domain</strong>: Enter a domain ID (1-15 Chinese characters), and mint your .okx NFT.</li>
+                <li><strong>Manual Registration</strong>: Copy hex data and contract address for manual registration via wallet with 0 ETH and hex as msg.data.</li>
+                <li><strong>Secure & Unique</strong>: One domain per address, case-insensitive IDs, low-cost transactions on X Layer.</li>
+            </ul>
+        </div>
+        <div class="footer">
+            Powered by <a href="https://www.okx.com/web3/explorer/xlayer" target="_blank">X Layer</a> | OKX Domain Name Launchpad © 2025
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
+    <script>
+        let web3, accounts, domainContract;
+
+        const contractConfig = {
+            address: '0x204fF780E126ADa44B5665a9cBC66925264c8dcB',
+            suffix: 'okx',
+            protocol: 'okxname',
+            currency: 'ETH',
+            name: 'X Layer CN Domain Name',
+            symbol: 'DCNOKX'
+        };
+
+        const domainContractABI = [
+            {"inputs":[{"internalType":"string","name":"_id","type":"string"}],"name":"mint","outputs":[],"stateMutability":"nonpayable","type":"function"},
+            {"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"minter","type":"address"},{"indexed":false,"internalType":"uint256","name":"tokenId","type":"uint256"},{"indexed":false,"internalType":"string","name":"id","type":"string"}],"name":"Minted","type":"event"},
+            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenName","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"uint256","name":"tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"uint256","name":"index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[],"name":"SUFFIX","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"idsMinted","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},
+            {"inputs":[{"internalType":"address","name":"owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"}
+        ];
+
+        const xLayer = { chainId: 196, name: 'X Layer mainnet', explorerUrl: 'https://www.okx.com/web3/explorer/xlayer', rpcUrl: 'https://rpc.xlayer.tech' };
+
+        async function connectWallet() {
+            const status = document.getElementById('networkStatus');
+            try {
+                if (!window.ethereum) {
+                    status.innerHTML = 'No wallet detected. Please install <a href="https://metamask.io" target="_blank">MetaMask</a>.';
+                    throw new Error("No wallet detected");
+                }
+                status.innerText = "Connecting...";
+                web3 = new Web3(window.ethereum);
+                accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                if (!accounts.length) throw new Error("Please unlock your wallet or connect it.");
+                const chainId = await web3.eth.getChainId();
+                if (chainId !== 196) {
+                    try {
+                        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0xc4' }] });
+                    } catch (switchError) {
+                        if (switchError.code === 4902) {
+                            await window.ethereum.request({
+                                method: 'wallet_addEthereumChain',
+                                params: [{
+                                    chainId: '0xc4',
+                                    chainName: 'X Layer mainnet',
+                                    nativeCurrency: { name: 'OKB', symbol: 'OKB', decimals: 18 },
+                                    rpcUrls: ['https://rpc.xlayer.tech'],
+                                    blockExplorerUrls: ['https://www.okx.com/web3/explorer/xlayer']
+                                }]
+                            });
+                        } else throw switchError;
+                    }
+                }
+                document.getElementById('walletAddress').innerText = `${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`;
+                domainContract = new web3.eth.Contract(domainContractABI, contractConfig.address);
+                status.innerText = "Connected to X Layer";
+            } catch (error) {
+                console.error(error);
+                status.innerText = "Failed to connect: " + error.message;
+            }
+        }
+
+        function isValidString(str) {
+            const strBytes = new TextEncoder().encode(str);
+            if (strBytes.length === 0 || strBytes.length % 3 !== 0 || strBytes.length > 45) return false;
+            for (let i = 0; i < strBytes.length; i += 3) {
+                if (i + 2 >= strBytes.length) return false;
+                const codepoint = (strBytes[i] << 16) | (strBytes[i + 1] << 8) | strBytes[i + 2];
+                if (codepoint < 0xE4B880 || codepoint > 0xE9BFA5) return false;
+            }
+            return true;
+        }
+
+        function convertToHex() {
+            const input = document.getElementById('domainId').value.trim();
+            const output = document.getElementById('hexOutputText');
+            const status = document.getElementById('mintStatus');
+            const copyHexButton = document.getElementById('copyHexButton');
+
+            if (!input) {
+                output.textContent = 'Enter a domain name to see the hex data';
+                output.dataset.hex = '';
+                status.textContent = '';
+                copyHexButton.disabled = true;
+                return;
+            }
+
+            if (!isValidString(input)) {
+                output.textContent = 'Invalid input: Use 1-15 Chinese characters';
+                output.dataset.hex = '';
+                status.textContent = 'Invalid input';
+                copyHexButton.disabled = true;
+                return;
+            }
+
+            const inscription = `data:,{"p":"${contractConfig.protocol}","op":"reg","name":"${input}.${contractConfig.suffix}"}`;
+            const hexData = '0x' + Array.from(new TextEncoder().encode(inscription)).map(byte => byte.toString(16).padStart(2, '0')).join('');
+            output.textContent = hexData;
+            output.dataset.hex = hexData;
+            status.textContent = `Hex data for ${input}.${contractConfig.suffix} generated`;
+            copyHexButton.disabled = false;
+        }
+
+        function copyToClipboard(type) {
+            const status = document.getElementById('mintStatus');
+            let textToCopy;
+            let sourceElement;
+
+            if (type === 'hex') {
+                sourceElement = document.getElementById('hexOutputText');
+                textToCopy = sourceElement.dataset.hex || '';
+            } else {
+                sourceElement = document.getElementById('contractAddress');
+                textToCopy = sourceElement.textContent;
+            }
+
+            if (!textToCopy || textToCopy === 'Enter a domain name to see the hex data' || textToCopy === 'Invalid input: Use 1-15 Chinese characters') {
+                status.textContent = `No valid ${type === 'hex' ? 'hex data' : 'address'} to copy`;
+                return;
+            }
+
+            const textArea = document.createElement('textarea');
+            textArea.value = textToCopy;
+            textArea.style.position = 'fixed';
+            textArea.style.opacity = '0';
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                status.textContent = `${type === 'hex' ? 'Hex data' : 'Contract address'} copied to clipboard`;
+            } catch (error) {
+                console.error(`Copy ${type} failed:`, error);
+                status.textContent = `Failed to copy ${type === 'hex' ? 'hex data' : 'contract address'}. Select and copy manually.`;
+            } finally {
+                document.body.removeChild(textArea);
+            }
+        }
+
+        async function mintDomain() {
+            const section = document.getElementById('mintDomainSection');
+            const status = document.getElementById('mintStatus');
+            const domainId = document.getElementById('domainId').value.trim();
+            if (!isValidString(domainId)) {
+                status.innerText = "Invalid Domain ID. Use 1-15 Chinese characters.";
+                return;
+            }
+            if (!accounts) {
+                status.innerText = "Please connect your wallet first!";
+                return;
+            }
+            try {
+                section.classList.add('loading');
+                status.innerText = "Checking domain availability...";
+                const isMinted = await domainContract.methods.idsMinted(domainId).call();
+                if (isMinted) {
+                    status.innerText = "Domain ID already minted!";
+                    return;
+                }
+                const balance = await domainContract.methods.balanceOf(accounts[0]).call();
+                if (balance > 0) {
+                    status.innerText = "This address has already minted a domain!";
+                    return;
+                }
+                status.innerText = "Minting domain NFT...";
+                const gas = await domainContract.methods.mint(domainId).estimateGas({ from: accounts[0] }).catch(() => 600000);
+                const tx = await domainContract.methods.mint(domainId).send({ from: accounts[0], gas: Math.floor(gas * 1.2) });
+                status.innerHTML = `Domain minted! Token ID: ${tx.events.Minted.returnValues.tokenId} (<a href="${xLayer.explorerUrl}/token/${contractConfig.address}?a=${tx.events.Minted.returnValues.tokenId}" target="_blank">View on Explorer</a>)`;
+                document.getElementById('domainId').value = '';
+            } catch (error) {
+                console.error(error);
+                status.innerText = "Failed to mint domain: " + (error.message.includes('revert') ? error.message.split('revert')[1]?.trim() || 'Unknown reason' : error.message);
+            } finally {
+                section.classList.remove('loading');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('copyHexButton').disabled = true;
+            document.getElementById('copyAddressButton').disabled = false;
+            document.getElementById('connectButton').addEventListener('click', connectWallet);
+            document.getElementById('mintDomain').addEventListener('click', mintDomain);
+            document.getElementById('copyHexButton').addEventListener('click', () => copyToClipboard('hex'));
+            document.getElementById('copyAddressButton').addEventListener('click', () => copyToClipboard('address'));
+            if (!window.location.protocol.startsWith('http')) document.getElementById('networkStatus').innerHTML = 'Please run this page via a local server (e.g., "npx serve") to connect MetaMask.';
+            else if (!window.ethereum) document.getElementById('networkStatus').innerHTML = 'No wallet detected. Please install <a href="https://metamask.io">MetaMask</a>.';
+        });
+    </script>
+</body>
+</html>
