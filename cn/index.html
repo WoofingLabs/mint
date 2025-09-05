@@ -79,7 +79,7 @@
                 <li><strong id="step1Title">连接您的钱包</strong>: 使用MetaMask连接到X Layer（链ID：196）。确保有足够的<span class="highlight">ETH</span>支付燃气费用。</li>
                 <li><strong id="step2Title">铸造域名</strong>: 输入域名ID（1-15个中文字符），铸造您的.okx NFT。</li>
                 <li><strong id="step3Title">手动注册</strong>: 复制十六进制数据和合约地址，通过钱包以0 ETH和十六进制数据作为msg.data进行手动注册。</li>
-                <li><strong id="step4Title">安全与唯一</strong>: 每个地址仅限一个域名，ID不区分大小写，X Layer上交易成本低。</li>
+                <li><strong id="step4Title">安全与唯一</strong>: 域名ID必须唯一，ID不区分大小写，X Layer上交易成本低。一个地址可铸造多个域名，只要每个域名ID不同。</li>
             </ul>
         </div>
         <div class="footer">
@@ -127,7 +127,7 @@
                 step3Title: '手动注册',
                 step3Desc: '复制十六进制数据和合约地址，通过钱包以0 ETH和十六进制数据作为msg.data进行手动注册。',
                 step4Title: '安全与唯一',
-                step4Desc: '每个地址仅限一个域名，ID不区分大小写，X Layer上交易成本低。',
+                step4Desc: '域名ID必须唯一，ID不区分大小写，X Layer上交易成本低。一个地址可铸造多个域名，只要每个域名ID不同。',
                 footerText: '由 <a href="https://www.okx.com/web3/explorer/xlayer" target="_blank">X Layer</a> 提供支持 | OKX域名发射台 © 2025',
                 status: {
                     noWallet: '未检测到钱包。请安装MetaMask。',
@@ -137,7 +137,6 @@
                     invalidDomainId: '无效的域名ID。请使用1-15个中文字符。',
                     walletNotConnected: '请先连接您的钱包！',
                     domainAlreadyMinted: '域名ID已被铸造！',
-                    addressAlreadyMinted: '此地址已铸造过一个域名！',
                     checkingAvailability: '正在检查域名可用性...',
                     minting: '正在铸造域名NFT...',
                     minted: '域名已铸造！Token ID: ',
@@ -179,7 +178,7 @@
                 step3Title: 'Manual Registration',
                 step3Desc: 'Copy hex data and contract address for manual registration via wallet with 0 ETH and hex as msg.data.',
                 step4Title: 'Secure & Unique',
-                step4Desc: 'One domain per address, case-insensitive IDs, low-cost transactions on X Layer.',
+                step4Desc: 'Domain IDs must be unique, case-insensitive, with low-cost transactions on X Layer. An address can mint multiple domains as long as each ID is different.',
                 footerText: 'Powered by <a href="https://www.okx.com/web3/explorer/xlayer" target="_blank">X Layer</a> | OKX Domain Name Launchpad © 2025',
                 status: {
                     noWallet: 'No wallet detected. Please install MetaMask.',
@@ -189,7 +188,6 @@
                     invalidDomainId: 'Invalid Domain ID. Use 1-15 Chinese characters.',
                     walletNotConnected: 'Please connect your wallet first!',
                     domainAlreadyMinted: 'Domain ID already minted!',
-                    addressAlreadyMinted: 'This address has already minted a domain!',
                     checkingAvailability: 'Checking domain availability...',
                     minting: 'Minting domain NFT...',
                     minted: 'Domain minted! Token ID: ',
@@ -404,11 +402,6 @@
                     status.innerText = translations[lang].status.domainAlreadyMinted;
                     return;
                 }
-                const balance = await domainContract.methods.balanceOf(accounts[0]).call();
-                if (balance > 0) {
-                    status.innerText = translations[lang].status.addressAlreadyMinted;
-                    return;
-                }
                 status.innerText = translations[lang].status.minting;
                 const gas = await domainContract.methods.mint(domainId).estimateGas({ from: accounts[0] }).catch(() => 600000);
                 const tx = await domainContract.methods.mint(domainId).send({ from: accounts[0], gas: Math.floor(gas * 1.2) });
@@ -416,7 +409,7 @@
                 document.getElementById('domainId').value = '';
             } catch (error) {
                 console.error(error);
-                status.innerText = translations[lang].status.failedToMint + (error.message.includes('revert') ? error.message.split('revert')[1]?.trim() || 'Unknown reason' : error.message);
+                status.innerText = translations[lang].status.failedToMint + (error.message.includes('revert') ? error.message.split('revert')[1]?.trim() || '未知原因' : error.message);
             } finally {
                 section.classList.remove('loading');
             }
