@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OKX Domain Name Launchpad - X Layer</title>
+    <title id="pageTitle">OKX域名发射台</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="icon" href="https://woofingjace.com/images/jace.png" type="image/x-icon">
     <style>
@@ -16,7 +16,7 @@
         .button { background: #333333; color: #ffffff; padding: 10px 20px; border: none; border-radius: 6px; font-weight: 600; font-size: 1em; cursor: pointer; transition: background 0.3s ease, transform 0.2s ease; margin: 5px; }
         .button:hover { background: #555555; transform: translateY(-2px); }
         .button:disabled { background: #444444; color: #777777; cursor: not-allowed; }
-        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cccccc; border-radius: 6px; background: #2A2A2A; color: #E6E6E6; font-size: 1em; }
+        select, input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cccccc; border-radius: 6px; background: #2A2A2A; color: #E6E6E6; font-size: 1em; }
         input::placeholder { color: #666666; }
         .status { margin-top: 10px; font-size: 0.9em; color: #cccccc; }
         .wallet-info { color: #cccccc; font-weight: 600; word-break: break-all; }
@@ -30,52 +30,60 @@
         .how-it-works li { margin-bottom: 12px; font-size: 0.9em; }
         .how-it-works .highlight { color: #cccccc; font-weight: 600; }
         .loading { opacity: 0.7; pointer-events: none; }
+        .lang-toggle { text-align: right; margin-bottom: 20px; }
         @media (max-width: 768px) {
             .container { padding: 15px; }
             .section, .how-it-works { padding: 15px; }
-            .button { width: 100%; padding: 12px; margin: 8px 0; }
+            .button, select { width: 100%; padding: 12px; margin: 8px 0; }
             .how-it-works ul { padding-left: 15px; }
             .how-it-works li { font-size: 0.85em; }
+            .lang-toggle { text-align: center; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>OKX Domain Name Launchpad</h1>
+        <div class="lang-toggle">
+            <select id="languageSelect" onchange="changeLanguage()">
+                <option value="zh">中文</option>
+                <option value="en">English</option>
+            </select>
+        </div>
+        <h1 id="pageTitle">OKX域名发射台</h1>
         <div class="section">
-            <h2>Connect to X Layer</h2>
-            <button id="connectButton" class="button">Connect Wallet</button>
-            <p>Wallet: <span id="walletAddress" class="wallet-info">Not connected</span></p>
-            <div id="networkStatus" class="status">Click to connect...</div>
+            <h2 id="connectSectionTitle">连接到X Layer</h2>
+            <button id="connectButton" class="button">连接钱包</button>
+            <p id="walletLabel">钱包: <span id="walletAddress" class="wallet-info">未连接</span></p>
+            <div id="networkStatus" class="status">点击连接...</div>
         </div>
         <div class="section" id="mintDomainSection">
-            <h2>Mint .okx Domain Name</h2>
-            <input type="text" id="domainId" placeholder="Domain ID (e.g., 王伟)" oninput="convertToHex()">
+            <h2 id="mintSectionTitle">铸造.okx域名</h2>
+            <input type="text" id="domainId" placeholder="域名ID（如：王伟）" oninput="convertToHex()">
             <div class="output-box">
-                <label>Hex Data</label>
-                <span id="hexOutputText">Enter a domain name to see the hex data</span>
+                <label id="hexDataLabel">十六进制数据</label>
+                <span id="hexOutputText">请输入域名以查看十六进制数据</span>
             </div>
-            <button id="copyHexButton" class="button" disabled>Copy Hex Data</button>
-            <button id="mintDomain" class="button">Mint Domain NFT</button>
+            <button id="copyHexButton" class="button" disabled>复制十六进制数据</button>
+            <button id="mintDomain" class="button">铸造域名NFT</button>
             <div class="output-box">
-                <label>Contract Address</label>
+                <label id="contractAddressLabel">合约地址</label>
                 <span id="contractAddress">0x204fF780E126ADa44B5665a9cBC66925264c8dcB</span>
             </div>
-            <button id="copyAddressButton" class="button">Copy Contract Address</button>
+            <button id="copyAddressButton" class="button">复制合约地址</button>
             <div id="mintStatus" class="status"></div>
         </div>
         <div class="how-it-works">
-            <h2>How It Works?</h2>
-            <p>Mint and manage your unique .okx domain name NFTs on X Layer with our Launchpad!</p>
-            <ul>
-                <li><strong>Connect Your Wallet</strong>: Use MetaMask to connect to X Layer (chain ID: 196). Ensure enough <span class="highlight">ETH</span> for gas fees.</li>
-                <li><strong>Mint Domain</strong>: Enter a domain ID (1-15 Chinese characters), and mint your .okx NFT.</li>
-                <li><strong>Manual Registration</strong>: Copy hex data and contract address for manual registration via wallet with 0 ETH and hex as msg.data.</li>
-                <li><strong>Secure & Unique</strong>: One domain per address, case-insensitive IDs, low-cost transactions on X Layer.</li>
+            <h2 id="howItWorksTitle">如何操作？</h2>
+            <p id="howItWorksDesc">在X Layer上使用我们的发射台铸造和管理您独特的.okx域名NFT！</p>
+            <ul id="howItWorksList">
+                <li><strong id="step1Title">连接您的钱包</strong>: 使用MetaMask连接到X Layer（链ID：196）。确保有足够的<span class="highlight">ETH</span>支付燃气费用。</li>
+                <li><strong id="step2Title">铸造域名</strong>: 输入域名ID（1-15个中文字符），铸造您的.okx NFT。</li>
+                <li><strong id="step3Title">手动注册</strong>: 复制十六进制数据和合约地址，通过钱包以0 ETH和十六进制数据作为msg.data进行手动注册。</li>
+                <li><strong id="step4Title">安全与唯一</strong>: 每个地址仅限一个域名，ID不区分大小写，X Layer上交易成本低。</li>
             </ul>
         </div>
         <div class="footer">
-            Powered by <a href="https://www.okx.com/web3/explorer/xlayer" target="_blank">X Layer</a> | OKX Domain Name Launchpad © 2025
+            <span id="footerText">由 <a href="https://www.okx.com/web3/explorer/xlayer" target="_blank">X Layer</a> 提供支持 | OKX域名发射台 © 2025</span>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
@@ -89,6 +97,113 @@
             currency: 'ETH',
             name: 'X Layer CN Domain Name',
             symbol: 'DCNOKX'
+        };
+
+        const translations = {
+            zh: {
+                pageTitle: 'OKX域名发射台',
+                connectSectionTitle: '连接到X Layer',
+                connectButton: '连接钱包',
+                walletLabel: '钱包: ',
+                walletNotConnected: '未连接',
+                networkStatusConnect: '点击连接...',
+                networkStatusNoWallet: '未检测到钱包。请安装 <a href="https://metamask.io" target="_blank">MetaMask</a>。',
+                networkStatusLocalServer: '请通过本地服务器运行此页面（例如“npx serve”）以连接MetaMask。',
+                mintSectionTitle: '铸造.okx域名',
+                domainIdPlaceholder: '域名ID（如：王伟）',
+                hexDataLabel: '十六进制数据',
+                hexOutputTextEmpty: '请输入域名以查看十六进制数据',
+                hexOutputTextInvalid: '无效输入：请使用1-15个中文字符',
+                copyHexButton: '复制十六进制数据',
+                mintDomainButton: '铸造域名NFT',
+                contractAddressLabel: '合约地址',
+                copyAddressButton: '复制合约地址',
+                howItWorksTitle: '如何操作？',
+                howItWorksDesc: '在X Layer上使用我们的发射台铸造和管理您独特的.okx域名NFT！',
+                step1Title: '连接您的钱包',
+                step1Desc: '使用MetaMask连接到X Layer（链ID：196）。确保有足够的<span class="highlight">ETH</span>支付燃气费用。',
+                step2Title: '铸造域名',
+                step2Desc: '输入域名ID（1-15个中文字符），铸造您的.okx NFT。',
+                step3Title: '手动注册',
+                step3Desc: '复制十六进制数据和合约地址，通过钱包以0 ETH和十六进制数据作为msg.data进行手动注册。',
+                step4Title: '安全与唯一',
+                step4Desc: '每个地址仅限一个域名，ID不区分大小写，X Layer上交易成本低。',
+                footerText: '由 <a href="https://www.okx.com/web3/explorer/xlayer" target="_blank">X Layer</a> 提供支持 | OKX域名发射台 © 2025',
+                status: {
+                    noWallet: '未检测到钱包。请安装MetaMask。',
+                    connecting: '正在连接...',
+                    connected: '已连接到X Layer',
+                    failedToConnect: '连接失败：',
+                    invalidDomainId: '无效的域名ID。请使用1-15个中文字符。',
+                    walletNotConnected: '请先连接您的钱包！',
+                    domainAlreadyMinted: '域名ID已被铸造！',
+                    addressAlreadyMinted: '此地址已铸造过一个域名！',
+                    checkingAvailability: '正在检查域名可用性...',
+                    minting: '正在铸造域名NFT...',
+                    minted: '域名已铸造！Token ID: ',
+                    viewOnExplorer: '在浏览器查看',
+                    failedToMint: '铸造域名失败：',
+                    noHexData: '无有效的十六进制数据可复制',
+                    noAddress: '无有效的合约地址可复制',
+                    hexCopied: '十六进制数据已复制到剪贴板',
+                    addressCopied: '合约地址已复制到剪贴板',
+                    copyHexFailed: '复制十六进制数据失败，请手动选择并复制。',
+                    copyAddressFailed: '复制合约地址失败，请手动选择并复制。',
+                    hexGenerated: '已为 {domain} 生成十六进制数据'
+                }
+            },
+            en: {
+                pageTitle: 'OKX Domain Name Launchpad',
+                connectSectionTitle: 'Connect to X Layer',
+                connectButton: 'Connect Wallet',
+                walletLabel: 'Wallet: ',
+                walletNotConnected: 'Not connected',
+                networkStatusConnect: 'Click to connect...',
+                networkStatusNoWallet: 'No wallet detected. Please install <a href="https://metamask.io" target="_blank">MetaMask</a>.',
+                networkStatusLocalServer: 'Please run this page via a local server (e.g., "npx serve") to connect MetaMask.',
+                mintSectionTitle: 'Mint .okx Domain Name',
+                domainIdPlaceholder: 'Domain ID (e.g., 王伟)',
+                hexDataLabel: 'Hex Data',
+                hexOutputTextEmpty: 'Enter a domain name to see the hex data',
+                hexOutputTextInvalid: 'Invalid input: Use 1-15 Chinese characters',
+                copyHexButton: 'Copy Hex Data',
+                mintDomainButton: 'Mint Domain NFT',
+                contractAddressLabel: 'Contract Address',
+                copyAddressButton: 'Copy Contract Address',
+                howItWorksTitle: 'How It Works?',
+                howItWorksDesc: 'Mint and manage your unique .okx domain name NFTs on X Layer with our Launchpad!',
+                step1Title: 'Connect Your Wallet',
+                step1Desc: 'Use MetaMask to connect to X Layer (chain ID: 196). Ensure enough <span class="highlight">ETH</span> for gas fees.',
+                step2Title: 'Mint Domain',
+                step2Desc: 'Enter a domain ID (1-15 Chinese characters), and mint your .okx NFT.',
+                step3Title: 'Manual Registration',
+                step3Desc: 'Copy hex data and contract address for manual registration via wallet with 0 ETH and hex as msg.data.',
+                step4Title: 'Secure & Unique',
+                step4Desc: 'One domain per address, case-insensitive IDs, low-cost transactions on X Layer.',
+                footerText: 'Powered by <a href="https://www.okx.com/web3/explorer/xlayer" target="_blank">X Layer</a> | OKX Domain Name Launchpad © 2025',
+                status: {
+                    noWallet: 'No wallet detected. Please install MetaMask.',
+                    connecting: 'Connecting...',
+                    connected: 'Connected to X Layer',
+                    failedToConnect: 'Failed to connect: ',
+                    invalidDomainId: 'Invalid Domain ID. Use 1-15 Chinese characters.',
+                    walletNotConnected: 'Please connect your wallet first!',
+                    domainAlreadyMinted: 'Domain ID already minted!',
+                    addressAlreadyMinted: 'This address has already minted a domain!',
+                    checkingAvailability: 'Checking domain availability...',
+                    minting: 'Minting domain NFT...',
+                    minted: 'Domain minted! Token ID: ',
+                    viewOnExplorer: 'View on Explorer',
+                    failedToMint: 'Failed to mint domain: ',
+                    noHexData: 'No valid hex data to copy',
+                    noAddress: 'No valid contract address to copy',
+                    hexCopied: 'Hex data copied to clipboard',
+                    addressCopied: 'Contract address copied to clipboard',
+                    copyHexFailed: 'Failed to copy hex data. Select and copy manually.',
+                    copyAddressFailed: 'Failed to copy contract address. Select and copy manually.',
+                    hexGenerated: 'Hex data generated for {domain}'
+                }
+            }
         };
 
         const domainContractABI = [
@@ -107,14 +222,58 @@
 
         const xLayer = { chainId: 196, name: 'X Layer mainnet', explorerUrl: 'https://www.okx.com/web3/explorer/xlayer', rpcUrl: 'https://rpc.xlayer.tech' };
 
+        function changeLanguage() {
+            const lang = document.getElementById('languageSelect').value;
+            document.documentElement.lang = lang;
+            document.getElementById('pageTitle').textContent = translations[lang].pageTitle;
+            document.getElementById('connectSectionTitle').textContent = translations[lang].connectSectionTitle;
+            document.getElementById('connectButton').textContent = translations[lang].connectButton;
+            document.getElementById('walletLabel').innerHTML = translations[lang].walletLabel + `<span id="walletAddress" class="wallet-info">${document.getElementById('walletAddress').textContent}</span>`;
+            document.getElementById('mintSectionTitle').textContent = translations[lang].mintSectionTitle;
+            document.getElementById('domainId').placeholder = translations[lang].domainIdPlaceholder;
+            document.getElementById('hexDataLabel').textContent = translations[lang].hexDataLabel;
+            document.getElementById('copyHexButton').textContent = translations[lang].copyHexButton;
+            document.getElementById('mintDomain').textContent = translations[lang].mintDomainButton;
+            document.getElementById('contractAddressLabel').textContent = translations[lang].contractAddressLabel;
+            document.getElementById('copyAddressButton').textContent = translations[lang].copyAddressButton;
+            document.getElementById('howItWorksTitle').textContent = translations[lang].howItWorksTitle;
+            document.getElementById('howItWorksDesc').textContent = translations[lang].howItWorksDesc;
+            document.getElementById('howItWorksList').innerHTML = `
+                <li><strong id="step1Title">${translations[lang].step1Title}</strong>: ${translations[lang].step1Desc}</li>
+                <li><strong id="step2Title">${translations[lang].step2Title}</strong>: ${translations[lang].step2Desc}</li>
+                <li><strong id="step3Title">${translations[lang].step3Title}</strong>: ${translations[lang].step3Desc}</li>
+                <li><strong id="step4Title">${translations[lang].step4Title}</strong>: ${translations[lang].step4Desc}</li>
+            `;
+            document.getElementById('footerText').innerHTML = translations[lang].footerText;
+
+            const hexOutput = document.getElementById('hexOutputText').textContent;
+            if (hexOutput === translations['zh'].hexOutputTextEmpty || hexOutput === translations['en'].hexOutputTextEmpty) {
+                document.getElementById('hexOutputText').textContent = translations[lang].hexOutputTextEmpty;
+            } else if (hexOutput === translations['zh'].hexOutputTextInvalid || hexOutput === translations['en'].hexOutputTextInvalid) {
+                document.getElementById('hexOutputText').textContent = translations[lang].hexOutputTextInvalid;
+            }
+
+            const currentStatus = document.getElementById('networkStatus').textContent;
+            if (currentStatus === translations['zh'].networkStatusConnect || currentStatus === translations['en'].networkStatusConnect) {
+                document.getElementById('networkStatus').textContent = translations[lang].networkStatusConnect;
+            } else if (currentStatus.includes(translations['zh'].networkStatusNoWallet) || currentStatus.includes(translations['en'].networkStatusNoWallet)) {
+                document.getElementById('networkStatus').innerHTML = translations[lang].networkStatusNoWallet;
+            } else if (currentStatus.includes(translations['zh'].networkStatusLocalServer) || currentStatus.includes(translations['en'].networkStatusLocalServer)) {
+                document.getElementById('networkStatus').innerHTML = translations[lang].networkStatusLocalServer;
+            }
+
+            convertToHex();
+        }
+
         async function connectWallet() {
             const status = document.getElementById('networkStatus');
+            const lang = document.getElementById('languageSelect').value;
             try {
                 if (!window.ethereum) {
-                    status.innerHTML = 'No wallet detected. Please install <a href="https://metamask.io" target="_blank">MetaMask</a>.';
+                    status.innerHTML = translations[lang].status.noWallet;
                     throw new Error("No wallet detected");
                 }
-                status.innerText = "Connecting...";
+                status.innerText = translations[lang].status.connecting;
                 web3 = new Web3(window.ethereum);
                 accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
                 if (!accounts.length) throw new Error("Please unlock your wallet or connect it.");
@@ -139,10 +298,10 @@
                 }
                 document.getElementById('walletAddress').innerText = `${accounts[0].slice(0, 6)}...${accounts[0].slice(-4)}`;
                 domainContract = new web3.eth.Contract(domainContractABI, contractConfig.address);
-                status.innerText = "Connected to X Layer";
+                status.innerText = translations[lang].status.connected;
             } catch (error) {
                 console.error(error);
-                status.innerText = "Failed to connect: " + error.message;
+                status.innerText = translations[lang].status.failedToConnect + error.message;
             }
         }
 
@@ -162,9 +321,10 @@
             const output = document.getElementById('hexOutputText');
             const status = document.getElementById('mintStatus');
             const copyHexButton = document.getElementById('copyHexButton');
+            const lang = document.getElementById('languageSelect').value;
 
             if (!input) {
-                output.textContent = 'Enter a domain name to see the hex data';
+                output.textContent = translations[lang].hexOutputTextEmpty;
                 output.dataset.hex = '';
                 status.textContent = '';
                 copyHexButton.disabled = true;
@@ -172,9 +332,9 @@
             }
 
             if (!isValidString(input)) {
-                output.textContent = 'Invalid input: Use 1-15 Chinese characters';
+                output.textContent = translations[lang].hexOutputTextInvalid;
                 output.dataset.hex = '';
-                status.textContent = 'Invalid input';
+                status.textContent = translations[lang].status.invalidDomainId;
                 copyHexButton.disabled = true;
                 return;
             }
@@ -183,12 +343,13 @@
             const hexData = '0x' + Array.from(new TextEncoder().encode(inscription)).map(byte => byte.toString(16).padStart(2, '0')).join('');
             output.textContent = hexData;
             output.dataset.hex = hexData;
-            status.textContent = `Hex data for ${input}.${contractConfig.suffix} generated`;
+            status.textContent = translations[lang].status.hexGenerated.replace('{domain}', `${input}.${contractConfig.suffix}`);
             copyHexButton.disabled = false;
         }
 
         function copyToClipboard(type) {
             const status = document.getElementById('mintStatus');
+            const lang = document.getElementById('languageSelect').value;
             let textToCopy;
             let sourceElement;
 
@@ -200,8 +361,8 @@
                 textToCopy = sourceElement.textContent;
             }
 
-            if (!textToCopy || textToCopy === 'Enter a domain name to see the hex data' || textToCopy === 'Invalid input: Use 1-15 Chinese characters') {
-                status.textContent = `No valid ${type === 'hex' ? 'hex data' : 'address'} to copy`;
+            if (!textToCopy || textToCopy === translations[lang].hexOutputTextEmpty || textToCopy === translations[lang].hexOutputTextInvalid) {
+                status.textContent = translations[lang].status[type === 'hex' ? 'noHexData' : 'noAddress'];
                 return;
             }
 
@@ -213,10 +374,10 @@
             textArea.select();
             try {
                 document.execCommand('copy');
-                status.textContent = `${type === 'hex' ? 'Hex data' : 'Contract address'} copied to clipboard`;
+                status.textContent = translations[lang].status[type === 'hex' ? 'hexCopied' : 'addressCopied'];
             } catch (error) {
                 console.error(`Copy ${type} failed:`, error);
-                status.textContent = `Failed to copy ${type === 'hex' ? 'hex data' : 'contract address'}. Select and copy manually.`;
+                status.textContent = translations[lang].status[type === 'hex' ? 'copyHexFailed' : 'copyAddressFailed'];
             } finally {
                 document.body.removeChild(textArea);
             }
@@ -226,35 +387,36 @@
             const section = document.getElementById('mintDomainSection');
             const status = document.getElementById('mintStatus');
             const domainId = document.getElementById('domainId').value.trim();
+            const lang = document.getElementById('languageSelect').value;
             if (!isValidString(domainId)) {
-                status.innerText = "Invalid Domain ID. Use 1-15 Chinese characters.";
+                status.innerText = translations[lang].status.invalidDomainId;
                 return;
             }
             if (!accounts) {
-                status.innerText = "Please connect your wallet first!";
+                status.innerText = translations[lang].status.walletNotConnected;
                 return;
             }
             try {
                 section.classList.add('loading');
-                status.innerText = "Checking domain availability...";
+                status.innerText = translations[lang].status.checkingAvailability;
                 const isMinted = await domainContract.methods.idsMinted(domainId).call();
                 if (isMinted) {
-                    status.innerText = "Domain ID already minted!";
+                    status.innerText = translations[lang].status.domainAlreadyMinted;
                     return;
                 }
                 const balance = await domainContract.methods.balanceOf(accounts[0]).call();
                 if (balance > 0) {
-                    status.innerText = "This address has already minted a domain!";
+                    status.innerText = translations[lang].status.addressAlreadyMinted;
                     return;
                 }
-                status.innerText = "Minting domain NFT...";
+                status.innerText = translations[lang].status.minting;
                 const gas = await domainContract.methods.mint(domainId).estimateGas({ from: accounts[0] }).catch(() => 600000);
                 const tx = await domainContract.methods.mint(domainId).send({ from: accounts[0], gas: Math.floor(gas * 1.2) });
-                status.innerHTML = `Domain minted! Token ID: ${tx.events.Minted.returnValues.tokenId} (<a href="${xLayer.explorerUrl}/token/${contractConfig.address}?a=${tx.events.Minted.returnValues.tokenId}" target="_blank">View on Explorer</a>)`;
+                status.innerHTML = `${translations[lang].status.minted}${tx.events.Minted.returnValues.tokenId} (<a href="${xLayer.explorerUrl}/token/${contractConfig.address}?a=${tx.events.Minted.returnValues.tokenId}" target="_blank">${translations[lang].status.viewOnExplorer}</a>)`;
                 document.getElementById('domainId').value = '';
             } catch (error) {
                 console.error(error);
-                status.innerText = "Failed to mint domain: " + (error.message.includes('revert') ? error.message.split('revert')[1]?.trim() || 'Unknown reason' : error.message);
+                status.innerText = translations[lang].status.failedToMint + (error.message.includes('revert') ? error.message.split('revert')[1]?.trim() || 'Unknown reason' : error.message);
             } finally {
                 section.classList.remove('loading');
             }
@@ -267,8 +429,9 @@
             document.getElementById('mintDomain').addEventListener('click', mintDomain);
             document.getElementById('copyHexButton').addEventListener('click', () => copyToClipboard('hex'));
             document.getElementById('copyAddressButton').addEventListener('click', () => copyToClipboard('address'));
-            if (!window.location.protocol.startsWith('http')) document.getElementById('networkStatus').innerHTML = 'Please run this page via a local server (e.g., "npx serve") to connect MetaMask.';
-            else if (!window.ethereum) document.getElementById('networkStatus').innerHTML = 'No wallet detected. Please install <a href="https://metamask.io">MetaMask</a>.';
+            const lang = document.getElementById('languageSelect').value;
+            if (!window.location.protocol.startsWith('http')) document.getElementById('networkStatus').innerHTML = translations[lang].networkStatusLocalServer;
+            else if (!window.ethereum) document.getElementById('networkStatus').innerHTML = translations[lang].networkStatusNoWallet;
         });
     </script>
 </body>
